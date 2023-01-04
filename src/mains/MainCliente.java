@@ -1,4 +1,4 @@
-/*
+package mains;/*
   Autores:
     Juan Sebastian Oviedo Oviedo (2179238-2724)
     Kirk Olaya Villamarín (2178638-2724)
@@ -12,13 +12,20 @@
 */
 
 
+import controller.Controlador;
 import gui.VentanaPrincipal;
 
-public class Main {
+public class MainCliente {
     public static void main(String[] args)
     {
-        VentanaPrincipal v = new VentanaPrincipal();
-        v.setVisible(true);
+        // Vista
+        VentanaPrincipal ventana = new VentanaPrincipal();
+        ventana.setVisible(true);
 
+        // Controlador
+        Controlador controlador = new Controlador(ventana);
+        ventana.getLienzo().addKeyListener(controlador);
+
+        controlador.conectar();
     }
 }

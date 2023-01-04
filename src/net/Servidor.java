@@ -1,16 +1,27 @@
 package net;
 
+import controller.Controlador;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Servidor {
-    public static void main(String[] args) {
+
+    private int portNumber;
+    private int max_num_jugadores;
+    private ArrayList<Despachador> jugadoresenlinea = new ArrayList<>();
+    private HashMap<String, Controlador.Jugador> jugadores = new HashMap<>();
+
+    public Servidor(int portNumber) {
+        this.portNumber = portNumber;
+    }
+    public void conectar() throws Exception{
+
         int portNumber = 1234;
-        ArrayList<Despachador> jugadoresenlinea = new ArrayList<>();
         int numeroJugadores = 0;
 
-        try {
             ServerSocket serverSocket = new ServerSocket(portNumber);
             while (true) {
                 System.out.println("ESPERANDO JUGADORES...");
@@ -29,8 +40,6 @@ public class Servidor {
                     System.out.println("NUMERO MAXIMO DE JUGADORES ALCANZADO");
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+
     }
 }

@@ -1,6 +1,6 @@
 package net;
 
-import gui.Jugador;
+import controller.Controlador;
 import gui.VentanaPrincipal;
 
 import javax.swing.*;
@@ -19,7 +19,7 @@ public class Despachador extends Thread {
     private Socket socket;
     private VentanaPrincipal gui = null;
     private ArrayList<Despachador> jugadoresenlinea = new ArrayList<>();
-    private HashMap<String, Jugador> jugadores = new HashMap<>(2);
+    private HashMap<String, Controlador.Jugador> jugadores = new HashMap<>(2);
     private int Xnicial = 0, Yinicial = 0;
 
     public Timer tiempo;
@@ -60,12 +60,10 @@ public class Despachador extends Thread {
         String[] datosJugadores = inputLine.split("#");
         for (String jugador : datosJugadores) {
             String[] login = jugador.split(",");
-            gui.getLienzo().getJugadores().put(login[0], new Jugador(login[0], seleccionarcolor(login[0]), Integer.parseInt(login[1]), Integer.parseInt(login[2])));
+            gui.getLienzo().getJugadores().put(login[0], new Controlador.Jugador(login[0], seleccionarcolor(login[0]), Integer.parseInt(login[1]), Integer.parseInt(login[2])));
 
-            if (Integer.parseInt(login[1]) == 330 && Integer.parseInt(login[2]) == 180) {
-                JOptionPane.showMessageDialog(null, "Ganador: Jugador  " + login[0]);
-                System.exit(0);
-            }
+            confirmarGanador(Integer.parseInt(login[1]), Integer.parseInt(login[2]), login[0]);
+
         }
         gui.getLienzo().repaint();
     }
@@ -73,7 +71,7 @@ public class Despachador extends Thread {
     public void despachadorServidor(String inputLine) {
         String[] datos = inputLine.split(":");
         if (datos[0].equals("login")) {
-            jugadores.put(datos[1], new Jugador(datos[1], seleccionarcolor(datos[1]), Xnicial, Yinicial));
+            jugadores.put(datos[1], new Controlador.Jugador(datos[1], seleccionarcolor(datos[1]), Xnicial, Yinicial));
         } else if (datos[0].equals("mover")) {
             String[] datosJugador = datos[1].split(",");
             jugadores.get(datosJugador[0]).setX(Integer.parseInt(datosJugador[1]));
@@ -82,7 +80,7 @@ public class Despachador extends Thread {
 
         String[] lista = new String[jugadores.size()];
         int index = 0;
-        for (Jugador e : jugadores.values()) {
+        for (Controlador.Jugador e : jugadores.values()) {
             lista[index++] = e.getNickname() + "," + e.getX() + "," + e.getY();
         }
 
@@ -96,6 +94,13 @@ public class Despachador extends Thread {
             out.println(inputLine);
         } catch (Exception e) {
             System.out.println("Error Send: " + e.getMessage());
+        }
+    }
+
+    public void confirmarGanador(int posicionX, int posicionY, String jugador){
+        if (posicionX == 330 &&  posicionY== 180) {
+            JOptionPane.showMessageDialog(null, "Ganador: Jugador  " + jugador);
+            System.exit(0);
         }
     }
 
